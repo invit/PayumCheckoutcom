@@ -16,7 +16,7 @@
         "checkout/checkout-php-library": "^1.2"
     },
     "require-dev": {
-        "payum/core": "^1.5@dev",
+        "payum/core": "^1.5@dev"
     },
     "config": {
         "bin-dir": "bin"
