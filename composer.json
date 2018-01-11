@@ -1,0 +1,33 @@
+{
+    "name": "invit/checkoutcom-creditcard",
+    "type": "library",
+    "description": "Payum extension for integrating Checkout.com creditcard payments",
+    "keywords": ["payment", "payum", "checkout.com", "creditcard"],
+    "homepage": "https://www.weekend4two.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alain Horner",
+            "email": "alain.horner@weekend4two.com"
+        }
+    ],
+    "require": {
+        "payum/core": "^1.5",
+        "checkout/checkout-php-library": "^1.2"
+    },
+    "require-dev": {
+        "payum/core": "^1.5@dev",
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "autoload": {
+        "psr-0": { "Payum\\CheckoutcomCreditcard": "" }
+    },
+    "target-dir": "Payum/CheckoutcomCreditcard",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.5-dev"
+        }
+    }
+}
