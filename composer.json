@@ -1,5 +1,5 @@
 {
-    "name": "invit/checkoutcom",
+    "name": "invit/payum-checkoutcom",
     "type": "library",
     "description": "Payum extension for integrating Checkout.com payments",
     "keywords": ["payment", "payum", "checkout.com"],
