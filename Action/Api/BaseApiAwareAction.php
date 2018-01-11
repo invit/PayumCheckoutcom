@@ -1,12 +1,12 @@
 <?php
-namespace Payum\CheckoutcomCreditcard\Action\Api;
+namespace Payum\Checkoutcom\Action\Api;
 
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\ApiAwareInterface;
 use Payum\Core\ApiAwareTrait;
 use Payum\Core\GatewayAwareInterface;
 use Payum\Core\GatewayAwareTrait;
-use Payum\CheckoutcomCreditcard\Api;
+use Payum\Checkoutcom\Api;
 
 abstract class BaseApiAwareAction implements ActionInterface, GatewayAwareInterface, ApiAwareInterface
 {

@@ -1,5 +1,5 @@
 <?php
-namespace Payum\CheckoutcomCreditcard\Action;
+namespace Payum\Checkoutcom\Action;
 
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\Request\GetStatusInterface;

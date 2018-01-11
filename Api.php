@@ -1,5 +1,5 @@
 <?php
-namespace Payum\CheckoutcomCreditcard;
+namespace Payum\Checkoutcom;
 
 use Http\Message\MessageFactory;
 use Payum\Core\Exception\Http\HttpException;

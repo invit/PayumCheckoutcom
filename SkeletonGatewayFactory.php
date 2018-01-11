@@ -1,17 +1,17 @@
 <?php
-namespace Payum\CheckoutcomCreditcard;
+namespace Payum\Checkoutcom;
 
-use Payum\CheckoutcomCreditcard\Action\AuthorizeAction;
-use Payum\CheckoutcomCreditcard\Action\CancelAction;
-use Payum\CheckoutcomCreditcard\Action\ConvertPaymentAction;
-use Payum\CheckoutcomCreditcard\Action\CaptureAction;
-use Payum\CheckoutcomCreditcard\Action\NotifyAction;
-use Payum\CheckoutcomCreditcard\Action\RefundAction;
-use Payum\CheckoutcomCreditcard\Action\StatusAction;
+use Payum\Checkoutcom\Action\AuthorizeAction;
+use Payum\Checkoutcom\Action\CancelAction;
+use Payum\Checkoutcom\Action\ConvertPaymentAction;
+use Payum\Checkoutcom\Action\CaptureAction;
+use Payum\Checkoutcom\Action\NotifyAction;
+use Payum\Checkoutcom\Action\RefundAction;
+use Payum\Checkoutcom\Action\StatusAction;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\GatewayFactory;
 
-class CheckoutcomCreditcardGatewayFactory extends GatewayFactory
+class CheckoutcomGatewayFactory extends GatewayFactory
 {
     /**
      * {@inheritDoc}
@@ -19,8 +19,8 @@ class CheckoutcomCreditcardGatewayFactory extends GatewayFactory
     protected function populateConfig(ArrayObject $config)
     {
         $config->defaults([
-            'payum.factory_name' => 'checkoutcom_creditcard',
-            'payum.factory_title' => 'checkoutcom_creditcard',
+            'payum.factory_name' => 'checkoutcom',
+            'payum.factory_title' => 'checkoutcom',
             'payum.action.capture' => new CaptureAction(),
             'payum.action.authorize' => new AuthorizeAction(),
             'payum.action.refund' => new RefundAction(),
