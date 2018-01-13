@@ -19,7 +19,27 @@ class StatusAction implements ActionInterface
 
         $model = ArrayObject::ensureArrayObject($request->getModel());
 
-        throw new \LogicException('Not implemented');
+        if (!isset($model['STATUS']) || !strlen($model['STATUS'])) {
+            $request->markNew();
+
+            return;
+        }
+
+        // details on the status codes: https://docs.checkout.com/reference/response-codes
+        switch ($model['STATUS']) {
+            case 10000:
+            case 10100:
+            case 10200:
+                $request->markAuthorized();
+                break;
+            default:
+                if (is_int($model['STATUS']) && $model['STATUS'] >= 20000 && $model['STATUS'] < 50000) {
+                    $request->markFailed();
+                }
+
+                $request->markUnknown();
+                break;
+        }
     }
 
     /**

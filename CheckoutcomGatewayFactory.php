@@ -32,15 +32,19 @@ class CheckoutcomGatewayFactory extends GatewayFactory
 
         if (false == $config['payum.api']) {
             $config['payum.default_options'] = array(
-                'sandbox' => true,
+                'environment' => Api::TEST
             );
             $config->defaults($config['payum.default_options']);
-            $config['payum.required_options'] = [];
+            $config['payum.required_options'] = ['api_key'];
 
             $config['payum.api'] = function (ArrayObject $config) {
                 $config->validateNotEmpty($config['payum.required_options']);
+                $checkoutcomConfig = [
+                    'api_key' => $config['api_key'],
+                    'environment' => $config['environment'],
+                ];
 
-                return new Api((array) $config, $config['payum.http_client'], $config['httplug.message_factory']);
+                return new Api($checkoutcomConfig, $config['payum.http_client'], $config['httplug.message_factory']);
             };
         }
     }

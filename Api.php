@@ -1,12 +1,16 @@
 <?php
 namespace Payum\Checkoutcom;
 
+use com\checkout\ApiClient;
 use Http\Message\MessageFactory;
 use Payum\Core\Exception\Http\HttpException;
 use Payum\Core\HttpClientInterface;
 
 class Api
 {
+    const TEST = 'test';
+    const PRODUCTION = 'production';
+
     /**
      * @var HttpClientInterface
      */
@@ -37,30 +41,10 @@ class Api
     }
 
     /**
-     * @param array $fields
-     *
-     * @return array
+     * @return ApiClient
      */
-    protected function doRequest($method, array $fields)
+    public function getCheckoutApiClient()
     {
-        $headers = [];
-
-        $request = $this->messageFactory->createRequest($method, $this->getApiEndpoint(), $headers, http_build_query($fields));
-
-        $response = $this->client->send($request);
-
-        if (false == ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300)) {
-            throw HttpException::factory($request, $response);
-        }
-
-        return $response;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getApiEndpoint()
-    {
-        return $this->options['sandbox'] ? 'http://sandbox.example.com' : 'http://example.com';
+        return new ApiClient($this->options['api_key']);
     }
 }
