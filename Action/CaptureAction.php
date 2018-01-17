@@ -37,7 +37,7 @@ class CaptureAction extends BaseApiAwareAction implements ActionInterface, Gatew
         try {
             $chargeResponse = $chargeService->CaptureCardCharge($chargeCapturePayload);
         } catch (ApiHttpClientCustomException $e) {
-            throw new InvalidArgumentException($e->getErrorMessage(), $e->getCode());
+            throw new \InvalidArgumentException($e->getErrorMessage(), $e->getCode());
         }
 
         $model['responseCode'] = $chargeResponse->getResponseCode();
