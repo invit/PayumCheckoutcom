@@ -19,25 +19,33 @@ class StatusAction implements ActionInterface
 
         $model = ArrayObject::ensureArrayObject($request->getModel());
 
-        if (!isset($model['STATUS']) || !strlen($model['STATUS'])) {
+        if (!isset($model['responseCode']) || !strlen($model['responseCode'])) {
             $request->markNew();
 
             return;
         }
 
         // details on the status codes: https://docs.checkout.com/reference/response-codes
-        switch ($model['STATUS']) {
+        switch ($model['responseCode']) {
             case 10000:
             case 10100:
             case 10200:
-                $request->markAuthorized();
-                break;
-            default:
-                if (is_int($model['STATUS']) && $model['STATUS'] >= 20000 && $model['STATUS'] < 50000) {
-                    $request->markFailed();
+                if ($model['status'] === 'Authorised') {
+                    $request->markAuthorized();
+                } elseif ($model['status'] === 'Captured') {
+                    $request->markCaptured();
+                } else {
+                    $request->markUnknown();
                 }
 
-                $request->markUnknown();
+                break;
+            default:
+                if (is_int($model['responseCode']) && $model['responseCode'] >= 20000 && $model['responseCode'] < 50000) {
+                    $request->markFailed();
+                } else {
+                    $request->markUnknown();
+                }
+
                 break;
         }
     }

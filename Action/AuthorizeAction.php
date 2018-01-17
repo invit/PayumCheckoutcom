@@ -45,7 +45,11 @@ class AuthorizeAction extends BaseApiAwareAction implements ActionInterface, Gat
             throw new InvalidArgumentException($e->getErrorMessage(), $e->getCode());
         }
 
-        $model['STATUS'] = $chargeResponse->getResponseCode();
+        $model['responseCode'] = $chargeResponse->getResponseCode();
+        $model['status'] = $chargeResponse->getStatus();
+        $model['chargeId'] = $chargeResponse->getId();
+        $model['chargeMode'] = $chargeResponse->getChargeMode();
+        $model['chargeCreated'] = $chargeResponse->getCreated();
 
         return $model;
     }
