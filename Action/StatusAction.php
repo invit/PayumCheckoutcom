@@ -26,28 +26,32 @@ class StatusAction implements ActionInterface
         }
 
         // details on the status codes: https://docs.checkout.com/reference/response-codes
-        switch ($model['responseCode']) {
-            case 10000:
-            case 10100:
-            case 10200:
-                if ($model['status'] === 'Authorised') {
+        if (in_array($model['responseCode'], [10000, 10100, 10200])) {
+            switch ($model['status']) {
+                case 'Authorised':
                     $request->markAuthorized();
-                } elseif ($model['status'] === 'Captured') {
+                    break;
+                case 'Captured':
                     $request->markCaptured();
-                } else {
+                    break;
+                case 'Voided':
+                    $request->markCanceled();
+                    break;
+                default:
                     $request->markUnknown();
-                }
+                    break;
+            }
 
-                break;
-            default:
-                if (is_int($model['responseCode']) && $model['responseCode'] >= 20000 && $model['responseCode'] < 50000) {
-                    $request->markFailed();
-                } else {
-                    $request->markUnknown();
-                }
-
-                break;
+            return;
         }
+
+
+        if (is_int($model['responseCode']) && $model['responseCode'] >= 20000 && $model['responseCode'] < 50000) {
+            $request->markFailed();
+            return;
+        }
+
+        $request->markUnknown();
     }
 
     /**
