@@ -37,6 +37,9 @@ class StatusAction implements ActionInterface
                 case 'Voided':
                     $request->markCanceled();
                     break;
+                case 'Refunded':
+                    $request->markRefunded();
+                    break;
                 default:
                     $request->markUnknown();
                     break;

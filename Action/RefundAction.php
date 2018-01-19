@@ -1,13 +1,17 @@
 <?php
 namespace Payum\Checkoutcom\Action;
 
+use com\checkout\ApiServices\Charges\RequestModels\ChargeRefund;
+use com\checkout\helpers\ApiHttpClientCustomException;
+use Payum\Checkoutcom\Action\Api\BaseApiAwareAction;
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\RequestNotSupportedException;
+use Payum\Core\GatewayAwareInterface;
 use Payum\Core\GatewayAwareTrait;
 use Payum\Core\Request\Refund;
 
-class RefundAction implements ActionInterface
+class RefundAction extends BaseApiAwareAction implements ActionInterface, GatewayAwareInterface
 {
     use GatewayAwareTrait;
 
@@ -21,8 +25,24 @@ class RefundAction implements ActionInterface
         RequestNotSupportedException::assertSupports($this, $request);
 
         $model = ArrayObject::ensureArrayObject($request->getModel());
+        $model->validateNotEmpty(['chargeId', 'amount']);
 
-        throw new \LogicException('Not implemented');
+        $checkoutApiClient = $this->api->getCheckoutApiClient();
+        $chargeService = $checkoutApiClient->chargeService();
+
+        $chargeCapturePayload = new ChargeRefund();
+        $chargeCapturePayload->setChargeId($model['chargeId']);
+        $chargeCapturePayload->setValue($model['amount']);
+
+        try {
+            $chargeResponse = $chargeService->refundCardChargeRequest($chargeCapturePayload);
+        } catch (ApiHttpClientCustomException $e) {
+            throw new \InvalidArgumentException($e->getErrorMessage(), $e->getCode());
+        }
+
+        $model['responseCode'] = $chargeResponse->getResponseCode();
+        $model['status'] = $chargeResponse->getStatus();
+        $model['chargeId'] = $chargeResponse->getId();
     }
 
     /**
