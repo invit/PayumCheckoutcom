@@ -45,6 +45,14 @@ class Api
      */
     public function getCheckoutApiClient()
     {
-        return new ApiClient($this->options['api_key']);
+        return new ApiClient($this->options['secrety_key']);
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->options;
     }
 }

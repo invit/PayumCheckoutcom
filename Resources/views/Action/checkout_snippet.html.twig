@@ -1,0 +1,22 @@
+<script async src="{{ checkoutjsPath }}"></script>
+
+<script type="text/javascript">
+    var PAYUM = PAYUM || {};
+
+    PAYUM.CHECKOUTCOM = (function () {
+        "use strict";
+
+        return {
+            getCheckout: function () {
+                return window.Checkout
+            },
+            configure: function (conf) {
+                conf.publicKey = '{{ publishableKey }}';
+                Checkout.configure(conf);
+            },
+            open: function () {
+                Checkout.open();
+            },
+        };
+    }());
+</script>

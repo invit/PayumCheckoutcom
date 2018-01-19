@@ -1,6 +1,8 @@
 <?php
 namespace Payum\Checkoutcom;
 
+use Payum\Checkoutcom\Action\Api\ObtainSnippetAction;
+use Payum\Checkoutcom\Action\Api\ObtainTokenAction;
 use Payum\Checkoutcom\Action\AuthorizeAction;
 use Payum\Checkoutcom\Action\CancelAction;
 use Payum\Checkoutcom\Action\ConvertPaymentAction;
@@ -28,6 +30,7 @@ class CheckoutcomGatewayFactory extends GatewayFactory
             'payum.action.notify' => new NotifyAction(),
             'payum.action.status' => new StatusAction(),
             'payum.action.convert_payment' => new ConvertPaymentAction(),
+            'payum.action.obtain_token' => new ObtainSnippetAction(),
         ]);
 
         if (false == $config['payum.api']) {
@@ -35,14 +38,22 @@ class CheckoutcomGatewayFactory extends GatewayFactory
                 'environment' => Api::TEST
             );
             $config->defaults($config['payum.default_options']);
-            $config['payum.required_options'] = ['api_key'];
+            $config['payum.required_options'] = ['publishable_key'];
+            $config['payum.required_options'] = ['secrety_key'];
 
             $config['payum.api'] = function (ArrayObject $config) {
                 $config->validateNotEmpty($config['payum.required_options']);
                 $checkoutcomConfig = [
-                    'api_key' => $config['api_key'],
+                    'publishable_key' => $config['publishable_key'],
+                    'secrety_key' => $config['secrety_key'],
                     'environment' => $config['environment'],
                 ];
+
+                $checkoutcomConfig['checkoutjs_path'] =
+                    $checkoutcomConfig['environment'] === Api::PRODUCTION ?
+                    'https://cdn.checkout.com/js/checkout.js' :
+                    'https://cdn.checkout.com/sandbox/js/checkout.js'
+                ;
 
                 return new Api($checkoutcomConfig, $config['payum.http_client'], $config['httplug.message_factory']);
             };
