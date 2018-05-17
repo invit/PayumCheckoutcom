@@ -45,7 +45,13 @@ class Api
      */
     public function getCheckoutApiClient()
     {
-        return new ApiClient($this->options['secrety_key']);
+        $env = 'sandbox';
+
+        if ($this->options['environment'] === self::PRODUCTION) {
+            $env =' live';
+        }
+
+        return new ApiClient($this->options['secrety_key'], $env);
     }
 
     /**
