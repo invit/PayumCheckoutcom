@@ -35,6 +35,8 @@ class ObtainSnippetAction extends BaseApiAwareAction implements ActionInterface,
         $this->gateway->execute($renderTemplate = new RenderTemplate('@PayumCheckoutcom/Action/checkout_snippet.html.twig', [
             'publishableKey' => $this->api->getOptions()['publishable_key'],
             'checkoutjsPath' => $this->api->getOptions()['checkoutjs_path'],
+            'framesjsPath' => $this->api->getOptions()['framesjs_path'],
+            'type' => $this->api->getOptions()['type'],
         ]));
 
         throw new HttpResponse($renderTemplate->getResult());

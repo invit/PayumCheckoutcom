@@ -49,9 +49,16 @@ class CheckoutcomGatewayFactory extends GatewayFactory
 
                 $checkoutcomConfig['checkoutjs_path'] =
                     $checkoutcomConfig['environment'] === Api::PRODUCTION ?
-                    'https://cdn.checkout.com/js/checkout.js' :
-                    'https://cdn.checkout.com/sandbox/js/checkout.js'
+                        'https://cdn.checkout.com/js/checkout.js' :
+                        'https://cdn.checkout.com/sandbox/js/checkout.js'
                 ;
+
+                $checkoutcomConfig['framesjs_path'] = 'https://cdn.checkout.com/js/frames.js';
+
+                $checkoutcomConfig['type'] = 'LIGHTBOX';
+                if ($config['type'] === 'FRAME') {
+                    $checkoutcomConfig['type'] = 'FRAME';
+                }
 
                 return new Api($checkoutcomConfig, $config['payum.http_client'], $config['httplug.message_factory']);
             };
