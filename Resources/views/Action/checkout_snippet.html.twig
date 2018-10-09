@@ -1,22 +1,36 @@
-<script async src="{{ checkoutjsPath }}"></script>
+{% if type == 'FRAME' %}
+    <script src="{{ framesjsPath }}"></script>
 
-<script type="text/javascript">
-    var PAYUM = PAYUM || {};
+    <script type="text/javascript">
+        var PAYUM = PAYUM || {};
 
-    PAYUM.CHECKOUTCOM = (function () {
-        "use strict";
-
-        return {
-            getCheckout: function () {
-                return window.Checkout
+        PAYUM.CHECKOUTCOM = {
+            getFrames: function () {
+                return window.Frames;
             },
-            configure: function (conf) {
+            initFrames: function (conf) {
+                conf.publicKey = '{{ publishableKey }}';
+                Frames.init(conf);
+            },
+        };
+    </script>
+{% elseif type == 'LIGHTBOX' %}
+    <script src="{{ checkoutjsPath }}"></script>
+
+    <script type="text/javascript">
+        var PAYUM = PAYUM || {};
+
+        PAYUM.CHECKOUTCOM = {
+            getCheckout: function () {
+                return window.Checkout;
+            },
+            configureLightbox: function (conf) {
                 conf.publicKey = '{{ publishableKey }}';
                 Checkout.configure(conf);
             },
-            open: function () {
+            openLightbox: function () {
                 Checkout.open();
             },
         };
-    }());
-</script>
+    </script>
+{% endif %}
