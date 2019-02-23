@@ -1,22 +1,23 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Payum\Checkoutcom\Action;
 
-use com\checkout\ApiServices\Charges\RequestModels\ChargeRefund;
-use com\checkout\helpers\ApiHttpClientCustomException;
+use Checkout\CheckoutApi;
+use Checkout\Library\Exceptions\CheckoutException;
 use Payum\Checkoutcom\Action\Api\BaseApiAwareAction;
-use Payum\Core\Action\ActionInterface;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\RequestNotSupportedException;
-use Payum\Core\GatewayAwareInterface;
 use Payum\Core\GatewayAwareTrait;
 use Payum\Core\Request\Refund;
 
-class RefundAction extends BaseApiAwareAction implements ActionInterface, GatewayAwareInterface
+class RefundAction extends BaseApiAwareAction
 {
     use GatewayAwareTrait;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      *
      * @param Refund $request
      */
@@ -25,28 +26,25 @@ class RefundAction extends BaseApiAwareAction implements ActionInterface, Gatewa
         RequestNotSupportedException::assertSupports($this, $request);
 
         $model = ArrayObject::ensureArrayObject($request->getModel());
-        $model->validateNotEmpty(['chargeId', 'amount']);
+        $model->validateNotEmpty(['id', 'amount']);
 
-        $checkoutApiClient = $this->api->getCheckoutApiClient();
-        $chargeService = $checkoutApiClient->chargeService();
+        /** @var CheckoutApi $checkoutApiClient */
+        $checkoutApi = $this->api->getCheckoutApi();
 
-        $chargeCapturePayload = new ChargeRefund();
-        $chargeCapturePayload->setChargeId($model['chargeId']);
-        $chargeCapturePayload->setValue($model['amount']);
+        $capture = new Refund($model['id']);
+        $capture->amount = $model['amount'];
 
         try {
-            $chargeResponse = $chargeService->refundCardChargeRequest($chargeCapturePayload);
-        } catch (ApiHttpClientCustomException $e) {
-            throw new \InvalidArgumentException($e->getErrorMessage(), $e->getCode());
+            $details = $checkoutApi->payments()->refund($capture);
+        } catch (CheckoutException $e) {
+            throw new \InvalidArgumentException($e->getMessage(), $e->getCode());
         }
 
-        $model['responseCode'] = $chargeResponse->getResponseCode();
-        $model['status'] = $chargeResponse->getStatus();
-        $model['chargeId'] = $chargeResponse->getId();
+        $model->replace((array) $details);
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function supports($request)
     {
