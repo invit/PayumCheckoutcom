@@ -31,7 +31,7 @@ class CaptureAction extends BaseApiAwareAction
         /** @var CheckoutApi $checkoutApiClient */
         $checkoutApi = $this->api->getCheckoutApi();
 
-        $capture = new Capture($model['id']);
+        $capture = new \Checkout\Models\Payments\Capture($model['id']);
         $capture->amount = $model['amount'];
 
         try {
