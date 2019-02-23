@@ -1,10 +1,10 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Payum\Checkoutcom;
 
-use com\checkout\ApiClient;
-use Http\Message\MessageFactory;
-use Payum\Core\Exception\Http\HttpException;
-use Payum\Core\HttpClientInterface;
+use Checkout\CheckoutApi;
 
 class Api
 {
@@ -12,52 +12,26 @@ class Api
     const PRODUCTION = 'production';
 
     /**
-     * @var HttpClientInterface
-     */
-    protected $client;
-
-    /**
-     * @var MessageFactory
-     */
-    protected $messageFactory;
-
-    /**
      * @var array
      */
-    protected $options = [];
+    private $options = [];
 
     /**
-     * @param array               $options
-     * @param HttpClientInterface $client
-     * @param MessageFactory      $messageFactory
-     *
      * @throws \Payum\Core\Exception\InvalidArgumentException if an option is invalid
      */
-    public function __construct(array $options, HttpClientInterface $client, MessageFactory $messageFactory)
+    public function __construct(array $options)
     {
         $this->options = $options;
-        $this->client = $client;
-        $this->messageFactory = $messageFactory;
     }
 
-    /**
-     * @return ApiClient
-     */
-    public function getCheckoutApiClient()
+    public function getCheckoutApi(): CheckoutApi
     {
-        $env = 'sandbox';
+        $sandbox = $this->options['environment'] === self::PRODUCTION ? -1 : 1;
 
-        if ($this->options['environment'] === self::PRODUCTION) {
-            $env =' live';
-        }
-
-        return new ApiClient($this->options['secrety_key'], $env);
+        return new CheckoutApi($this->options['secrety_key'], $sandbox);
     }
 
-    /**
-     * @return array
-     */
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->options;
     }

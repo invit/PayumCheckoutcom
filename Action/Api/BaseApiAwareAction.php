@@ -1,4 +1,5 @@
 <?php
+
 namespace Payum\Checkoutcom\Action\Api;
 
 use Payum\Core\Action\ActionInterface;

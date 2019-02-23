@@ -1,22 +1,23 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Payum\Checkoutcom;
 
 use Payum\Checkoutcom\Action\Api\ObtainSnippetAction;
-use Payum\Checkoutcom\Action\Api\ObtainTokenAction;
 use Payum\Checkoutcom\Action\AuthorizeAction;
 use Payum\Checkoutcom\Action\CancelAction;
-use Payum\Checkoutcom\Action\ConvertPaymentAction;
 use Payum\Checkoutcom\Action\CaptureAction;
-use Payum\Checkoutcom\Action\NotifyAction;
 use Payum\Checkoutcom\Action\RefundAction;
 use Payum\Checkoutcom\Action\StatusAction;
+use Payum\Checkoutcom\Action\SyncAction;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\GatewayFactory;
 
 class CheckoutcomGatewayFactory extends GatewayFactory
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function populateConfig(ArrayObject $config)
     {
@@ -28,12 +29,13 @@ class CheckoutcomGatewayFactory extends GatewayFactory
             'payum.action.refund' => new RefundAction(),
             'payum.action.cancel' => new CancelAction(),
             'payum.action.status' => new StatusAction(),
+            'payum.action.sync' => new SyncAction(),
             'payum.action.obtain_token' => new ObtainSnippetAction(),
         ]);
 
         if (false == $config['payum.api']) {
             $config['payum.default_options'] = array(
-                'environment' => Api::TEST
+                'environment' => Api::TEST,
             );
             $config->defaults($config['payum.default_options']);
             $config['payum.required_options'] = ['publishable_key'];
@@ -60,7 +62,7 @@ class CheckoutcomGatewayFactory extends GatewayFactory
                     $checkoutcomConfig['type'] = 'FRAME';
                 }
 
-                return new Api($checkoutcomConfig, $config['payum.http_client'], $config['httplug.message_factory']);
+                return new Api($checkoutcomConfig);
             };
         }
     }

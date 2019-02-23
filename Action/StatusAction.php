@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Payum\Checkoutcom\Action;
 
 use Payum\Core\Action\ActionInterface;
@@ -9,7 +12,7 @@ use Payum\Core\Exception\RequestNotSupportedException;
 class StatusAction implements ActionInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      *
      * @param GetStatusInterface $request
      */
@@ -19,46 +22,40 @@ class StatusAction implements ActionInterface
 
         $model = ArrayObject::ensureArrayObject($request->getModel());
 
-        if (!isset($model['responseCode']) || !strlen($model['responseCode'])) {
+        if (!isset($model['status']) || !strlen($model['status'])) {
             $request->markNew();
 
             return;
         }
 
-        // details on the status codes: https://docs.checkout.com/reference/response-codes
-        if (in_array($model['responseCode'], [10000, 10100, 10200])) {
-            switch ($model['status']) {
-                case 'Authorised':
-                    $request->markAuthorized();
-                    break;
-                case 'Captured':
-                    $request->markCaptured();
-                    break;
-                case 'Voided':
-                    $request->markCanceled();
-                    break;
-                case 'Refunded':
-                    $request->markRefunded();
-                    break;
-                default:
-                    $request->markUnknown();
-                    break;
-            }
-
-            return;
+        // details on the status codes: https://docs.checkout.com/v2.0/docs/response-codes
+        switch ($model['status']) {
+            case 'Authorized':
+                $request->markAuthorized();
+                break;
+            case 'Captured':
+                $request->markCaptured();
+                break;
+            case 'Voided':
+                $request->markCanceled();
+                break;
+            case 'Refunded':
+                $request->markRefunded();
+                break;
+            case 'Pending':
+                $request->markPending();
+                break;
+            case 'Declined':
+                $request->markFailed();
+                break;
+            default:
+                $request->markUnknown();
+                break;
         }
-
-
-        if (is_int($model['responseCode']) && $model['responseCode'] >= 20000 && $model['responseCode'] < 50000) {
-            $request->markFailed();
-            return;
-        }
-
-        $request->markUnknown();
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function supports($request)
     {

@@ -1,24 +1,27 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Payum\Checkoutcom\Action;
 
-use com\checkout\ApiServices\Charges\RequestModels\CardTokenChargeCreate;
-use com\checkout\ApiServices\SharedModels\Address;
-use com\checkout\helpers\ApiHttpClientCustomException;
+use Checkout\CheckoutApi;
+use Checkout\Library\Exceptions\CheckoutException;
+use Checkout\Models\Payments\Payment;
+use Checkout\Models\Payments\TokenSource;
 use Payum\Checkoutcom\Action\Api\BaseApiAwareAction;
-use Payum\Core\Action\ActionInterface;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\InvalidArgumentException;
-use Payum\Core\GatewayAwareInterface;
 use Payum\Core\GatewayAwareTrait;
+use Payum\Core\Reply\HttpRedirect;
 use Payum\Core\Request\Authorize;
 use Payum\Core\Exception\RequestNotSupportedException;
 
-class AuthorizeAction extends BaseApiAwareAction implements ActionInterface, GatewayAwareInterface
+class AuthorizeAction extends BaseApiAwareAction
 {
     use GatewayAwareTrait;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      *
      * @param Authorize $request
      */
@@ -26,36 +29,56 @@ class AuthorizeAction extends BaseApiAwareAction implements ActionInterface, Gat
     {
         RequestNotSupportedException::assertSupports($this, $request);
         $model = ArrayObject::ensureArrayObject($request->getModel());
-        $model->validateNotEmpty(['amount', 'currency', 'trackId', 'cardToken']);
+        $model->validateNotEmpty(['amount', 'currency', 'token']);
 
-        $checkoutApiClient = $this->api->getCheckoutApiClient();
-        $chargeService = $checkoutApiClient->chargeService();
+        /** @var CheckoutApi $checkoutApi */
+        $checkoutApi = $this->api->getCheckoutApi();
 
-        $cardTokenChargePayload = new CardTokenChargeCreate();
-        $cardTokenChargePayload->setEmail($model['customerEmail']);
-        $cardTokenChargePayload->setAutoCapture($model['autoCapture'] === true ? 'Y' : 'N');
-        $cardTokenChargePayload->setValue($model['amount']);
-        $cardTokenChargePayload->setCurrency($model['currency']);
-        $cardTokenChargePayload->setTrackId($model['trackId']);
-        $cardTokenChargePayload->setCardToken($model['cardToken']);
+        $method = new TokenSource($model['token']);
+        $payment = new Payment($method, $model['currency']);
+        $payment->amount = $model['amount'];
 
-        try {
-            $chargeResponse = $chargeService->chargeWithCardToken($cardTokenChargePayload);
-        } catch (ApiHttpClientCustomException $e) {
-            throw new InvalidArgumentException($e->getErrorMessage(), $e->getCode());
+        $optionalParameters = [
+            'payment_type',
+            'reference',
+            'description',
+            'capture',
+            'capture_on',
+            'customer',
+            'billing_descriptor',
+            'shipping',
+            '3ds',
+            'previous_payment_id',
+            'risk',
+            'success_url',
+            'failure_url',
+            'payment_ip',
+            'recipient',
+            'metadata',
+        ];
+
+        foreach ($optionalParameters as $parameter) {
+            if (isset($model[$parameter])) {
+                $payment->{$parameter} = is_array($model[$parameter]) ? (object) $model[$parameter] : $model[$parameter];
+            }
         }
 
-        $model['responseCode'] = $chargeResponse->getResponseCode();
-        $model['status'] = $chargeResponse->getStatus();
-        $model['chargeId'] = $chargeResponse->getId();
-        $model['chargeMode'] = $chargeResponse->getChargeMode();
-        $model['chargeCreated'] = $chargeResponse->getCreated();
+        try {
+            $details = $checkoutApi->payments()->request($payment);
+            $model->replace((array) $details);
+        } catch (CheckoutException $e) {
+            throw new InvalidArgumentException($e->getMessage(), $e->getCode());
+        }
+
+        if ($model['http_code'] === 202) {
+            throw new HttpRedirect($model['_links']['redirect']['href']);
+        }
 
         return $model;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function supports($request)
     {
