@@ -35,7 +35,7 @@ class CaptureAction extends BaseApiAwareAction
         $capture->amount = $model['amount'];
 
         try {
-            $details = $checkoutApi->payments()->void($capture);
+            $details = $checkoutApi->payments()->capture($capture);
         } catch (CheckoutException $e) {
             throw new \InvalidArgumentException($e->getMessage(), $e->getCode());
         }
