@@ -31,8 +31,7 @@ class RefundAction extends BaseApiAwareAction
         /** @var CheckoutApi $checkoutApiClient */
         $checkoutApi = $this->api->getCheckoutApi();
 
-        $capture = new Refund($model['id']);
-        $capture->amount = $model['amount'];
+        $capture = new \Checkout\Models\Payments\Refund($model['id'], (int) $model['amount']);
 
         try {
             $details = $checkoutApi->payments()->refund($capture);
