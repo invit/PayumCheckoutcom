@@ -6,6 +6,7 @@ namespace Payum\Checkoutcom\Action;
 
 use Checkout\CheckoutApi;
 use Checkout\Library\Exceptions\CheckoutException;
+use Checkout\Library\Exceptions\CheckoutHttpException;
 use Checkout\Models\Payments\Payment;
 use Checkout\Models\Payments\TokenSource;
 use Payum\Checkoutcom\Action\Api\BaseApiAwareAction;
@@ -66,6 +67,9 @@ class AuthorizeAction extends BaseApiAwareAction
         try {
             $details = $checkoutApi->payments()->request($payment);
             $model->replace((array) $details);
+        } catch (CheckoutHttpException $e) {
+            $model['error'] = $e->getBody();
+            throw new InvalidArgumentException($e->getMessage(), $e->getCode());
         } catch (CheckoutException $e) {
             throw new InvalidArgumentException($e->getMessage(), $e->getCode());
         }
