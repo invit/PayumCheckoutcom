@@ -26,7 +26,7 @@ class Api
 
     public function getCheckoutApi(): CheckoutApi
     {
-        $sandbox = $this->options['environment'] === self::PRODUCTION ? -1 : 1;
+        $sandbox = $this->options['environment'] === self::PRODUCTION ? 0 : 1;
 
         return new CheckoutApi($this->options['secrety_key'], $sandbox);
     }
