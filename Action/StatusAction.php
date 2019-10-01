@@ -33,6 +33,7 @@ class StatusAction implements ActionInterface
             case 'Authorized':
                 $request->markAuthorized();
                 break;
+            case 'Partially Captured':
             case 'Captured':
                 $request->markCaptured();
                 break;
