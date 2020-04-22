@@ -55,7 +55,7 @@ class CheckoutcomGatewayFactory extends GatewayFactory
                         'https://cdn.checkout.com/sandbox/js/checkout.js'
                 ;
 
-                $checkoutcomConfig['framesjs_path'] = 'https://cdn.checkout.com/js/frames.js';
+                $checkoutcomConfig['framesjs_path'] = 'https://cdn.checkout.com/js/framesv2.min.js';
 
                 $checkoutcomConfig['type'] = 'LIGHTBOX';
                 if ($config['type'] === 'FRAME') {

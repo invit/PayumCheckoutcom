@@ -2,6 +2,7 @@
 
 namespace Payum\Checkoutcom\Action\Api;
 
+use Payum\Checkoutcom\Reply\PublicReply;
 use Payum\Checkoutcom\Request\Api\ObtainSnippet;
 use Payum\Checkoutcom\Request\Api\ObtainToken;
 use Payum\Core\Action\ActionInterface;
@@ -26,14 +27,10 @@ class ObtainSnippetAction extends BaseApiAwareAction implements ActionInterface,
         RequestNotSupportedException::assertSupports($this, $request);
         $model = ArrayObject::ensureArrayObject($request->getModel());
 
-        $this->gateway->execute($renderTemplate = new RenderTemplate('@PayumCheckoutcom/Action/checkout_snippet.html.twig', [
-            'publishableKey' => $this->api->getOptions()['publishable_key'],
-            'checkoutjsPath' => $this->api->getOptions()['checkoutjs_path'],
-            'framesjsPath' => $this->api->getOptions()['framesjs_path'],
-            'type' => $this->api->getOptions()['type'],
-        ]));
-
-        throw new HttpResponse($renderTemplate->getResult());
+        throw new PublicReply(
+            $this->api->getOptions()['publishable_key'],
+            $this->api->getOptions()['framesjs_path']
+        );
     }
 
     /**
