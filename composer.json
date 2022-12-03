@@ -17,8 +17,7 @@
     ],
     "require": {
         "payum/core": "^1.7.3",
-        "checkout/checkout-sdk-php": "^3.0.6",
-        "symfony/http-client": "^v6.2.0"
+        "checkout/checkout-sdk-php": "^3.0.6"
     },
     "config": {
         "bin-dir": "bin"

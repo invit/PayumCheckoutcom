@@ -35,7 +35,6 @@ class Api
             ->staticKeys()
             ->secretKey($this->options['secrety_key'])
             ->environment($this->options['environment'] === self::PRODUCTION ? Environment::production() : Environment::sandbox())
-            ->httpClientBuilder(new HttpClientBuilder())
             ->build();
     }
 
