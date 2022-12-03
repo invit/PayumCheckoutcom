@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Payum\Checkoutcom\Action;
 
-use Checkout\CheckoutApi;
+use Checkout\Previous\CheckoutApi;
 use Checkout\CheckoutApiException;
 use Checkout\Payments\CaptureRequest;
 use Payum\Checkoutcom\Action\Api\BaseApiAwareAction;
