@@ -1,6 +1,6 @@
 <?php
 
-namespace Checkout;
+namespace Payum\Checkoutcom\Checkout;
 
 use Symfony\Component\HttpClient\HttpClient;
 

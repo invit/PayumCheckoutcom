@@ -7,7 +7,7 @@ namespace Payum\Checkoutcom;
 use Checkout\CheckoutApi;
 use Checkout\CheckoutSdk;
 use Checkout\Environment;
-use Checkout\HttpClientBuilder;
+use Payum\Checkoutcom\Checkout\HttpClientBuilder;
 
 class Api
 {
