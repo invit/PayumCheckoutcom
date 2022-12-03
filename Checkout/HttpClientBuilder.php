@@ -3,7 +3,8 @@
 namespace Payum\Checkoutcom\Checkout;
 
 use Checkout\HttpClientBuilderInterface;
-use Symfony\Component\HttpClient\HttpClient;
+use Psr\Http\Client\ClientInterface;
+use Symfony\Component\HttpClient\Psr18Client;
 
 final class HttpClientBuilder implements HttpClientBuilderInterface
 {
@@ -11,13 +12,10 @@ final class HttpClientBuilder implements HttpClientBuilderInterface
 
     public function __construct()
     {
-        $this->client = new HttpClient();
+        $this->client = new Psr18Client();
     }
 
-    /**
-     * @return HttpClient
-     */
-    public function getClient(): HttpClient
+    public function getClient(): ClientInterface
     {
         return $this->client;
     }
