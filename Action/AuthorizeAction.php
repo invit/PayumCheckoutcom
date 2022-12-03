@@ -6,7 +6,7 @@ namespace Payum\Checkoutcom\Action;
 
 use Checkout\Previous\CheckoutApi;
 use Checkout\CheckoutApiException;
-use Checkout\Payments\Request\PaymentRequest;
+use Checkout\Payments\Previous\PaymentRequest;
 use Checkout\Payments\Request\Source\RequestTokenSource;
 use Payum\Checkoutcom\Action\Api\BaseApiAwareAction;
 use Payum\Core\Bridge\Spl\ArrayObject;
