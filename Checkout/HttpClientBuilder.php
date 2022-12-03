@@ -2,6 +2,7 @@
 
 namespace Payum\Checkoutcom\Checkout;
 
+use Checkout\HttpClientBuilderInterface;
 use Symfony\Component\HttpClient\HttpClient;
 
 final class HttpClientBuilder implements HttpClientBuilderInterface
