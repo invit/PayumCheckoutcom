@@ -76,7 +76,7 @@ class AuthorizeAction extends BaseApiAwareAction
             throw new InvalidArgumentException($e->getMessage(), $e->getCode());
         }
 
-        if ($model['http_code'] === 202) {
+        if ($model['http_metadata']->getStatusCode() === 202) {
             throw new HttpRedirect($model['_links']['redirect']['href']);
         }
 
