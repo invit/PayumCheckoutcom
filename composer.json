@@ -16,11 +16,9 @@
         }
     ],
     "require": {
-        "payum/core": "^1.3",
-        "checkout/checkout-sdk-php": "^1.0"
-    },
-    "require-dev": {
-        "payum/core": "^1.5@dev"
+        "payum/core": "^1.7.3",
+        "checkout/checkout-sdk-php": "^3.0.6",
+        "symfony/http-client": "^v6.2.0"
     },
     "config": {
         "bin-dir": "bin"
@@ -28,10 +26,5 @@
     "autoload": {
         "psr-0": { "Payum\\Checkoutcom": "" }
     },
-    "target-dir": "Payum/Checkoutcom",
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.5-dev"
-        }
-    }
+    "target-dir": "Payum/Checkoutcom"
 }

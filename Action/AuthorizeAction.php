@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Payum\Checkoutcom\Action;
 
 use Checkout\CheckoutApi;
-use Checkout\Library\Exceptions\CheckoutException;
-use Checkout\Library\Exceptions\CheckoutHttpException;
-use Checkout\Models\Payments\Payment;
-use Checkout\Models\Payments\TokenSource;
+use Checkout\CheckoutApiException;
+use Checkout\Payments\Request\PaymentRequest;
+use Checkout\Payments\Request\Source\RequestTokenSource;
 use Payum\Checkoutcom\Action\Api\BaseApiAwareAction;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\InvalidArgumentException;
@@ -35,9 +34,14 @@ class AuthorizeAction extends BaseApiAwareAction
         /** @var CheckoutApi $checkoutApi */
         $checkoutApi = $this->api->getCheckoutApi();
 
-        $method = new TokenSource($model['token']);
-        $payment = new Payment($method, $model['currency']);
-        $payment->amount = $model['amount'];
+
+        $requestTokenSource = new RequestTokenSource();
+        $requestTokenSource->token = $model['token'];
+
+        $paymentRequest = new PaymentRequest();
+        $paymentRequest->amount = $model['amount'];
+        $paymentRequest->source = $requestTokenSource;
+        $paymentRequest->currency = $model['currency'];
 
         $optionalParameters = [
             'payment_type',
@@ -60,17 +64,15 @@ class AuthorizeAction extends BaseApiAwareAction
 
         foreach ($optionalParameters as $parameter) {
             if (isset($model[$parameter])) {
-                $payment->{$parameter} = is_array($model[$parameter]) ? (object) $model[$parameter] : $model[$parameter];
+                $paymentRequest->{$parameter} = is_array($model[$parameter]) ? (object) $model[$parameter] : $model[$parameter];
             }
         }
 
         try {
-            $details = $checkoutApi->payments()->request($payment);
+            $details = $checkoutApi->getPaymentsClient()->requestPayment($paymentRequest);
             $model->replace((array) $details);
-        } catch (CheckoutHttpException $e) {
-            $model['error'] = $e->getBody();
-            throw new InvalidArgumentException($e->getMessage(), $e->getCode());
-        } catch (CheckoutException $e) {
+        } catch (CheckoutApiException $e) {
+            $model['error'] = $e->error_details;
             throw new InvalidArgumentException($e->getMessage(), $e->getCode());
         }
 

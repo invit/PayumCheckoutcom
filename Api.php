@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Payum\Checkoutcom;
 
 use Checkout\CheckoutApi;
+use Checkout\CheckoutSdk;
+use Checkout\Environment;
+use Checkout\HttpClientBuilder;
 
 class Api
 {
@@ -26,9 +29,11 @@ class Api
 
     public function getCheckoutApi(): CheckoutApi
     {
-        $sandbox = $this->options['environment'] === self::PRODUCTION ? 0 : 1;
-
-        return new CheckoutApi($this->options['secrety_key'], $sandbox);
+        return CheckoutSdk::builder()->staticKeys()
+            ->secretKey($this->options['secrety_key'])
+            ->environment($this->options['environment'] === self::PRODUCTION ? Environment::production() : Environment::sandbox())
+            ->httpClientBuilder(new HttpClientBuilder())
+            ->build();
     }
 
     public function getOptions(): array

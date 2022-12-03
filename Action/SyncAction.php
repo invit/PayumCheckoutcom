@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Payum\Checkoutcom\Action;
 
 use Checkout\CheckoutApi;
-use Checkout\Library\Exceptions\CheckoutException;
+use Checkout\CheckoutApiException;
 use Payum\Checkoutcom\Action\Api\BaseApiAwareAction;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\InvalidArgumentException;
@@ -24,12 +24,12 @@ class SyncAction extends BaseApiAwareAction
         $model = ArrayObject::ensureArrayObject($request->getModel());
         $model->validateNotEmpty(['id']);
 
-        /** @var CheckoutApi $checkoutApiClient */
+        /** @var CheckoutApi $checkoutApi */
         $checkoutApi = $this->api->getCheckoutApi();
 
         try {
-            $details = $checkoutApi->payments()->details($model['id']);
-        } catch (CheckoutException $e) {
+            $details = $checkoutApi->getPaymentsClient()->getPaymentDetails($model['id']);
+        } catch (CheckoutApiException $e) {
             throw new InvalidArgumentException($e->getMessage(), $e->getCode());
         }
 

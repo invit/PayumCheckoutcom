@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Payum\Checkoutcom\Action;
 
 use Checkout\CheckoutApi;
-use Checkout\Library\Exceptions\CheckoutException;
+use Checkout\CheckoutApiException;
+use Checkout\Payments\RefundRequest;
 use Payum\Checkoutcom\Action\Api\BaseApiAwareAction;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\RequestNotSupportedException;
@@ -28,14 +29,15 @@ class RefundAction extends BaseApiAwareAction
         $model = ArrayObject::ensureArrayObject($request->getModel());
         $model->validateNotEmpty(['id', 'amount']);
 
-        /** @var CheckoutApi $checkoutApiClient */
+        /** @var CheckoutApi $checkoutApi */
         $checkoutApi = $this->api->getCheckoutApi();
 
-        $capture = new \Checkout\Models\Payments\Refund($model['id'], (int) $model['amount']);
+        $refundRequest = new RefundRequest();
+        $refundRequest->amount = (int) $model['amount'];
 
         try {
-            $details = $checkoutApi->payments()->refund($capture);
-        } catch (CheckoutException $e) {
+            $details = $checkoutApi->getPaymentsClient()->refundPayment($model['id'], $refundRequest);
+        } catch (CheckoutApiException $e) {
             throw new \InvalidArgumentException($e->getMessage(), $e->getCode());
         }
 

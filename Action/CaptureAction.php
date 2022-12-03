@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Payum\Checkoutcom\Action;
 
 use Checkout\CheckoutApi;
-use Checkout\Library\Exceptions\CheckoutException;
+use Checkout\CheckoutApiException;
+use Checkout\Payments\CaptureRequest;
 use Payum\Checkoutcom\Action\Api\BaseApiAwareAction;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\GatewayAwareTrait;
@@ -28,14 +29,15 @@ class CaptureAction extends BaseApiAwareAction
         $model = ArrayObject::ensureArrayObject($request->getModel());
         $model->validateNotEmpty(['id', 'amount']);
 
-        /** @var CheckoutApi $checkoutApiClient */
+        /** @var CheckoutApi $checkoutApi */
         $checkoutApi = $this->api->getCheckoutApi();
 
-        $capture = new \Checkout\Models\Payments\Capture($model['id'], (int) $model['amount']);
+        $caputureRequest = new CaptureRequest();
+        $caputureRequest->amount = (int) $model['amount'];
 
         try {
-            $details = $checkoutApi->payments()->capture($capture);
-        } catch (CheckoutException $e) {
+            $details = $checkoutApi->getPaymentsClient()->capturePayment($model['id'], $caputureRequest);
+        } catch (CheckoutApiException $e) {
             throw new \InvalidArgumentException($e->getMessage(), $e->getCode());
         }
 
