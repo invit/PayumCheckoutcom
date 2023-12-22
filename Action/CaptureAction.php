@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Payum\Checkoutcom\Action;
 
-use Checkout\Previous\CheckoutApi;
+use Checkout\CheckoutApi;
 use Checkout\CheckoutApiException;
-use Checkout\Payments\Previous\CaptureRequest;
+use Checkout\Payments\CaptureRequest;
 use Payum\Checkoutcom\Action\Api\BaseApiAwareAction;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\GatewayAwareTrait;

@@ -28,7 +28,7 @@ class ObtainSnippetAction extends BaseApiAwareAction implements ActionInterface,
         $model = ArrayObject::ensureArrayObject($request->getModel());
 
         throw new PublicReply(
-            $this->api->getOptions()['publishable_key'],
+            $this->api->getOptions()['public_key'],
             $this->api->getOptions()['framesjs_path']
         );
     }

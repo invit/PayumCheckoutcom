@@ -38,15 +38,17 @@ class CheckoutcomGatewayFactory extends GatewayFactory
                 'environment' => Api::TEST,
             );
             $config->defaults($config['payum.default_options']);
-            $config['payum.required_options'] = ['publishable_key'];
-            $config['payum.required_options'] = ['secrety_key'];
+            $config['payum.required_options'] = ['public_key'];
+            $config['payum.required_options'] = ['secret_key'];
+            $config['payum.required_options'] = ['channel_id'];
 
             $config['payum.api'] = function (ArrayObject $config) {
                 $config->validateNotEmpty($config['payum.required_options']);
                 $checkoutcomConfig = [
-                    'publishable_key' => $config['publishable_key'],
-                    'secrety_key' => $config['secrety_key'],
+                    'public_key' => $config['public_key'],
+                    'secret_key' => $config['secret_key'],
                     'environment' => $config['environment'],
+                    'channel_id' => $config['channel_id'],
                 ];
 
                 $checkoutcomConfig['checkoutjs_path'] =

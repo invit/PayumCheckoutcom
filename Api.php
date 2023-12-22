@@ -7,7 +7,7 @@ namespace Payum\Checkoutcom;
 
 use Checkout\CheckoutSdk;
 use Checkout\Environment;
-use Checkout\Previous\CheckoutApi;
+use Checkout\CheckoutApi;
 use Payum\Checkoutcom\Checkout\HttpClientBuilder;
 
 class Api
@@ -31,9 +31,8 @@ class Api
     public function getCheckoutApi(): CheckoutApi
     {
         return CheckoutSdk::builder()
-            ->previous()
             ->staticKeys()
-            ->secretKey($this->options['secrety_key'])
+            ->secretKey($this->options['secret_key'])
             ->environment($this->options['environment'] === self::PRODUCTION ? Environment::production() : Environment::sandbox())
             ->build();
     }

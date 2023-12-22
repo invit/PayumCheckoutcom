@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Payum\Checkoutcom\Action;
 
-use Checkout\Previous\CheckoutApi;
+use Checkout\CheckoutApi;
 use Checkout\CheckoutApiException;
-use Checkout\Payments\Previous\PaymentRequest;
+use Checkout\Payments\Request\PaymentRequest;
 use Checkout\Payments\Request\Source\RequestTokenSource;
 use Payum\Checkoutcom\Action\Api\BaseApiAwareAction;
 use Payum\Core\Bridge\Spl\ArrayObject;
@@ -39,6 +39,7 @@ class AuthorizeAction extends BaseApiAwareAction
         $requestTokenSource->token = $model['token'];
 
         $paymentRequest = new PaymentRequest();
+        $paymentRequest->processing_channel_id = $this->api->getOptions()['channel_id'];
         $paymentRequest->amount = $model['amount'];
         $paymentRequest->source = $requestTokenSource;
         $paymentRequest->currency = $model['currency'];
