@@ -53,7 +53,7 @@ class AuthorizeAction extends BaseApiAwareAction
             'customer',
             'billing_descriptor',
             'shipping',
-            '3ds',
+            'three_ds',
             'previous_payment_id',
             'risk',
             'success_url',
